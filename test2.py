@@ -27,6 +27,7 @@ i = np.random.randint(len(train_x))
 
 print(train_x[i].shape)
 print(train_y[i].shape)
+print(type(train_x))
 
 from simple_deep_learning.mnist_extended.semantic_segmentation import display_grayscale_array
 
