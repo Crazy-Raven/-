@@ -1,6 +1,7 @@
 """
-使用FCN进行20次步骤的训练，用5次随机生成的测试样本测试模型性能。
-在这个模型中只训练了对0,1,2的识别和分割。
+对FCN模型的第二次改进：
+这个模型已经对手写体数字0,1,2的识别和分割做到了不错的准确度，并且没有出现过拟合的问题。
+尝试不改变训练步数，而是在模型中加入一些池化层和上采样层，提高效率。
 """
 
 import numpy as np
@@ -22,9 +23,9 @@ train_x, train_y, test_x, test_y = create_semantic_segmentation_dataset(num_trai
 print(train_x.shape, train_y.shape)
 i = np.random.randint(len(train_x))
 
-display_grayscale_array(array=train_x[i])  # 展示训练集输入的图像
+# display_grayscale_array(array=train_x[i])  # 展示训练集输入的图像
 
-plot_class_masks(train_y[i])  # 展示训练集图像分标签的状态
+# plot_class_masks(train_y[i])  # 展示训练集图像分标签的状态
 
 tf.keras.backend.clear_session()  # 调用keras清除全局状态
 
@@ -32,12 +33,16 @@ model = models.Sequential()
 model.add(
     layers.Conv2D(filters=16, kernel_size=(3, 3), activation='relu', input_shape=train_x.shape[1:], padding='same'))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
+model.add(layers.MaxPooling2D(pool_size=(2, 2)))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
+model.add(layers.MaxPooling2D(pool_size=(2, 2)))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
+model.add(layers.UpSampling2D(size=(2, 2)))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
+model.add(layers.UpSampling2D(size=(2, 2)))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
 model.add(layers.Conv2D(filters=16, kernel_size=(3, 3), activation='relu', padding='same'))
 model.add(layers.Conv2D(filters=train_y.shape[-1], kernel_size=(3, 3), activation='sigmoid', padding='same'))

@@ -1,5 +1,8 @@
 """
-使用FCN进行20次步骤的训练，用5次随机生成的测试样本测试模型性能。
+对FCN模型的第一次改进：
+这个模型已经对手写体数字0,1,2的识别和分割做到了不错的准确度，并且没有出现过拟合的问题。
+我们可以尝试通过增加训练步数来优化模型，使其性能更好。
+使用FCN进行40次步骤的训练，用5次随机生成的测试样本测试模型性能。
 在这个模型中只训练了对0,1,2的识别和分割。
 """
 
@@ -22,9 +25,9 @@ train_x, train_y, test_x, test_y = create_semantic_segmentation_dataset(num_trai
 print(train_x.shape, train_y.shape)
 i = np.random.randint(len(train_x))
 
-display_grayscale_array(array=train_x[i])  # 展示训练集输入的图像
+# display_grayscale_array(array=train_x[i])  # 展示训练集输入的图像
 
-plot_class_masks(train_y[i])  # 展示训练集图像分标签的状态
+# plot_class_masks(train_y[i])  # 展示训练集图像分标签的状态
 
 tf.keras.backend.clear_session()  # 调用keras清除全局状态
 
@@ -57,7 +60,7 @@ model.compile(optimizer='adam',
                        tf.keras.metrics.Recall(),
                        tf.keras.metrics.Precision()])
 
-history = model.fit(train_x, train_y, epochs=20,
+history = model.fit(train_x, train_y, epochs=40,
                     validation_data=(test_x, test_y))
 # loss-损失       binary_accuracy-二进制精度       recall-召回率      precision-精确度
 # 这些指标只是每个单独像素的指标，并不能很好地代表实际分割的情况如何。接下来直观地查看训练效果：
