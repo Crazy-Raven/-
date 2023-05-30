@@ -1,0 +1,5 @@
+git bash终端
+git switch dev1		切换到dev1分支
+git add .			添加所有文件到仓库
+git commit -m "xxx"		创建新的提交
+git push origin dev1		提交至dev1

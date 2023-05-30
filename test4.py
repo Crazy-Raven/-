@@ -61,8 +61,8 @@ test_y_predicted = model.predict(test_x)
 
 from simple_deep_learning.mnist_extended.semantic_segmentation import display_segmented_image
 
-np.random.seed(6)
-for _ in range(5):
+np.random.seed(6)       # 随机数种子
+for _ in range(5):      # 循环测试5轮效果
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
     i = np.random.randint(len(test_y_predicted))
     print(f'Example {i}')
