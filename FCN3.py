@@ -10,6 +10,7 @@ from matplotlib import pyplot as plt
 from simple_deep_learning.mnist_extended.semantic_segmentation import create_semantic_segmentation_dataset
 from simple_deep_learning.mnist_extended.semantic_segmentation import display_grayscale_array, plot_class_masks
 from simple_deep_learning.mnist_extended.semantic_segmentation import display_segmented_image
+import joblib
 
 np.random.seed(1)
 train_x, train_y, test_x, test_y = create_semantic_segmentation_dataset(num_train_samples=1000,
@@ -59,17 +60,20 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.BinaryCrossentropy(),
               metrics=[tf.keras.metrics.BinaryAccuracy(),
                        tf.keras.metrics.Recall(),
-                       tf.keras.metrics.Precision()])
+                       tf.keras.metrics.Precision(),
+                       tf.keras.metrics.MeanIoU(num_classes=2)])
 
-history = model.fit(train_x, train_y, epochs=50,        # 进行50轮训练
+history = model.fit(train_x, train_y, epochs=30,        # 进行30轮训练
                     validation_data=(test_x, test_y))
 # loss-损失       binary_accuracy-二进制精度       recall-召回率      precision-精确度
 # 这些指标只是每个单独像素的指标，并不能很好地代表实际分割的情况如何。接下来直观地查看训练效果：
 
+joblib.dump(model, filename='./model_joblib.pkl')  # 使用joblib将训练得到的模型保存至本地
+
 test_y_predicted = model.predict(test_x)
 
 np.random.seed(6)  # 随机数种子
-for _ in range(5):  # 循环测试5轮效果
+for _ in range(4):  # 循环测试4轮效果
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
     i = np.random.randint(len(test_y_predicted))
     print(f'Example {i}')

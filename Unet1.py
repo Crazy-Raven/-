@@ -10,6 +10,7 @@ from simple_deep_learning.mnist_extended.semantic_segmentation import create_sem
 from simple_deep_learning.mnist_extended.semantic_segmentation import display_grayscale_array, plot_class_masks
 from simple_deep_learning.mnist_extended.semantic_segmentation import display_segmented_image
 
+
 np.random.seed(1)
 train_x, train_y, test_x, test_y = create_semantic_segmentation_dataset(num_train_samples=1000,
                                                                         num_test_samples=200,

@@ -63,9 +63,11 @@ history = model.fit(train_x, train_y, epochs=20,
 # 这些指标只是每个单独像素的指标，并不能很好地代表实际分割的情况如何。接下来直观地查看训练效果：
 
 test_y_predicted = model.predict(test_x)
+# test_y_predicted和test_y 都存到pkl中 相当于有了测试集的原本数据和预测数据 然后单独用一个代码计算两个指标
+
 
 np.random.seed(6)  # 随机数种子
-for _ in range(5):  # 循环测试5轮效果
+for _ in range(4):  # 循环测试4轮效果
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
     i = np.random.randint(len(test_y_predicted))
     print(f'Example {i}')
