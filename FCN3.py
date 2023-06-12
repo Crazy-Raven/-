@@ -61,7 +61,7 @@ model.compile(optimizer='adam',
               metrics=[tf.keras.metrics.BinaryAccuracy(),
                        tf.keras.metrics.Recall(),
                        tf.keras.metrics.Precision(),
-                       tf.keras.metrics.MeanIoU(num_classes=2)])
+                       tf.keras.metrics.MeanIoU(num_classes=10)])
 
 history = model.fit(train_x, train_y, epochs=30,        # 进行30轮训练
                     validation_data=(test_x, test_y))

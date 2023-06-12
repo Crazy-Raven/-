@@ -60,7 +60,7 @@ model.compile(optimizer='adam',
               metrics=[tf.keras.metrics.BinaryAccuracy(),
                        tf.keras.metrics.Recall(),
                        tf.keras.metrics.Precision(),
-                       tf.keras.metrics.MeanIoU(num_classes=2)])
+                       tf.keras.metrics.MeanIoU(num_classes=3)])
 # 调用metrics里集成的MeanIoU计算mIoU，其中num_classes为必给项，提供预测任务可能具有的标签数量
 
 history = model.fit(train_x, train_y, epochs=40,
