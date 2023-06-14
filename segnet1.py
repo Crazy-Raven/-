@@ -16,7 +16,7 @@ import segnet
 np.random.seed(1)
 train_x, train_y, test_x, test_y = create_semantic_segmentation_dataset(num_train_samples=1000,
                                                                         num_test_samples=200,
-                                                                        image_shape=(64, 64),
+                                                                        image_shape=(60, 60),
                                                                         max_num_digits_per_image=4,
                                                                         num_classes=10)
 # 一般train_x表示训练集的输入数据，train_y表示训练集的标签数据。
@@ -29,9 +29,9 @@ i = np.random.randint(len(train_x))
 # plot_class_masks(train_y[i])  # 展示训练集图像分标签的状态
 
 tf.keras.backend.clear_session()  # 调用keras清除全局状态
-model = build_segnet(10, 'vgg16', 64, 64)
+# model = build_segnet(10, 'vgg16', 64, 64)
 
-"""
+
 model = models.Sequential()
 model.add(
     layers.Conv2D(filters=16, kernel_size=(3, 3), activation='relu', input_shape=train_x.shape[1:], padding='same'))
@@ -40,6 +40,8 @@ model.add(layers.MaxPooling2D(pool_size=(2, 2)))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
 model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+model.add(layers.ZeroPadding2D(1))  # 零填充层 15,15,32 -- 17,17,32
+model.add(layers.Conv2D(32, 3, padding='valid'))  # 17,17,32 -- 15,15,32
 model.add(layers.UpSampling2D(size=(2, 2)))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
@@ -47,7 +49,7 @@ model.add(layers.UpSampling2D(size=(2, 2)))
 model.add(layers.Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'))
 model.add(layers.Conv2D(filters=16, kernel_size=(3, 3), activation='relu', padding='same'))
 model.add(layers.Conv2D(filters=train_y.shape[-1], kernel_size=(3, 3), activation='sigmoid', padding='same'))
-"""
+
 # filters:输出空间的维度（即卷积核的数量）。
 # kernel_size: 卷积核的大小，可以是一个整数（表示正方形），或者是一个元组 / 列表（表示长方形）
 # strides: 卷积的步长，可以是一个整数（表示在水平和垂直方向的相同步长），或者是一个元组 / 列表（表示水平和垂直方向的步长），如 (2, 2)
@@ -66,7 +68,7 @@ model.compile(optimizer='adam',
                        tf.keras.metrics.MeanIoU(num_classes=10)])
 # 调用metrics里集成的MeanIoU计算mIoU，其中num_classes为必给项，提供预测任务可能具有的标签数量
 
-history = model.fit(train_x, train_y, epochs=20,
+history = model.fit(train_x, train_y, epochs=40,
                     validation_data=(test_x, test_y))
 # loss-损失       binary_accuracy-二进制精度       recall-召回率      precision-精确度       mIoU-平均交并比
 # 这些指标只是每个单独像素的指标，并不能很好地代表实际分割的情况如何。接下来直观地查看训练效果：
